@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0e0e10">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Massive Attack T-Shirt Finder — Personal Shopper Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0e10; --panel:#16161a; --panel2:#1d1d22; --rule:#2a2a31;
+    --ink:#f2f0eb; --mid:#a6a39c; --light:#75736e;
+    --accent:#e8503a; --accent-soft:#3a1c17; --gold:#d9b06b;
+    --good:#6fbf73;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)}
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.6;
+  }
+  a{color:inherit}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* Header */
+  header.site{
+    border-bottom:1px solid var(--rule);
+    padding:34px 0 26px; text-align:center;
+    background:radial-gradient(120% 100% at 50% 0%, #1a1a1f 0%, var(--bg) 70%);
+  }
+  .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,5vw,52px);line-height:1.05;margin:8px 0 6px;letter-spacing:.5px}
+  .sub{color:var(--mid);max-width:620px;margin:0 auto;font-weight:300}
+
+  /* Toolbar */
+  .toolbar{
+    position:sticky;top:0;z-index:20;background:rgba(14,14,16,.92);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--rule);
+    padding:14px 0;
+  }
+  .toolbar .wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip{
+    font:inherit;font-size:12px;color:var(--mid);background:var(--panel);
+    border:1px solid var(--rule);border-radius:999px;padding:7px 14px;cursor:pointer;
+    transition:.15s; letter-spacing:.02em; white-space:nowrap;
+  }
+  .chip:hover{color:var(--ink);border-color:#3d3d45}
+  .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .controls-right{display:flex;gap:10px;align-items:center}
+  select,input[type=search]{
+    font:inherit;font-size:13px;color:var(--ink);background:var(--panel);
+    border:1px solid var(--rule);border-radius:8px;padding:8px 11px;outline:none;
+  }
+  input[type=search]{min-width:180px}
+  select:focus,input:focus{border-color:var(--accent)}
+  .count{color:var(--light);font-size:12px;letter-spacing:.04em}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px;padding:30px 0 10px}
+  .card{
+    background:var(--panel);border:1px solid var(--rule);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;transition:.18s;position:relative;
+  }
+  .card:hover{transform:translateY(-3px);border-color:#39393f;box-shadow:0 14px 34px rgba(0,0,0,.45)}
+  .thumb{aspect-ratio:1/1;width:100%;display:block;background:#000}
+  .thumb svg{width:100%;height:100%;display:block}
+  .pick-btn{
+    position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;
+    background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);color:#fff;
+    cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(4px);transition:.15s;
+  }
+  .pick-btn:hover{background:rgba(0,0,0,.8)}
+  .pick-btn.on{background:var(--accent);border-color:var(--accent)}
+  .body{padding:15px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;line-height:1.15}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:600}
+  .b-official{background:var(--accent-soft);color:#f0a596;border:1px solid #5a261f}
+  .b-reissue{background:#19222b;color:#7fb6d6;border:1px solid #284155}
+  .b-vintage{background:#241f12;color:var(--gold);border:1px solid #4a3c20}
+  .b-pod{background:#1c2418;color:#9bc88a;border:1px solid #324528}
+  .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:auto}
+  .price{font-size:20px;font-weight:600;letter-spacing:.01em}
+  .price small{font-size:11px;color:var(--light);font-weight:400}
+  .vendor{font-size:12px;color:var(--mid)}
+  .ship{font-size:11.5px;color:var(--light);display:flex;align-items:center;gap:5px;border-top:1px solid var(--rule);padding-top:9px}
+  .ship b{color:var(--mid);font-weight:500}
+  .buy{
+    display:block;text-align:center;text-decoration:none;font-weight:600;font-size:13px;letter-spacing:.04em;
+    background:var(--ink);color:#0e0e10;border-radius:8px;padding:11px;margin-top:4px;transition:.15s;
+  }
+  .buy:hover{background:var(--accent);color:#fff}
+
+  /* Picks bar */
+  .picksbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;transform:translateY(120%);transition:.25s cubic-bezier(.2,.7,.3,1);
+    background:linear-gradient(0deg,#101013,#1b1b20);border-top:1px solid var(--rule);
+    box-shadow:0 -12px 40px rgba(0,0,0,.5);
+  }
+  .picksbar.show{transform:translateY(0)}
+  .picksbar .wrap{display:flex;align-items:center;gap:16px;padding:13px 20px;flex-wrap:wrap}
+  .picksbar strong{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600}
+  .pickchips{display:flex;gap:8px;flex-wrap:wrap;flex:1;min-width:200px}
+  .pchip{font-size:11.5px;background:var(--panel2);border:1px solid var(--rule);border-radius:6px;padding:4px 9px;color:var(--mid)}
+  .clearp{font:inherit;font-size:12px;color:var(--light);background:none;border:1px solid var(--rule);border-radius:7px;padding:7px 13px;cursor:pointer}
+  .clearp:hover{color:var(--ink);border-color:#3d3d45}
+
+  .empty{text-align:center;color:var(--light);padding:60px 0;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;display:none}
+
+  footer{border-top:1px solid var(--rule);margin-top:36px;padding:28px 0 90px;color:var(--light);font-size:12px}
+  footer .wrap{display:flex;flex-direction:column;gap:10px}
+  footer a{color:var(--mid);text-decoration:underline;text-underline-offset:2px}
+  .note{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:13px 15px;color:var(--mid);line-height:1.55}
+  @media(max-width:560px){.toolbar .wrap{gap:10px}.controls-right{width:100%;justify-content:space-between}input[type=search]{flex:1}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="eyebrow">Personal Shopper · Curated Gallery</div>
+    <h1>Massive Attack T-Shirt Finder</h1>
+    <p class="sub">Fifteen hand-picked tees from across the web — official store, Amazon, Etsy, vintage dealers and more. Filter by vendor, sort by price, and ♥ the ones you like to compare.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="filters" id="catFilters">
+      <button class="chip active" data-cat="all">All</button>
+      <button class="chip" data-cat="official">Official</button>
+      <button class="chip" data-cat="reissue">Modern reissue</button>
+      <button class="chip" data-cat="vintage">Vintage original</button>
+      <button class="chip" data-cat="pod">Print-on-demand</button>
+    </div>
+    <div class="controls-right">
+      <input type="search" id="search" placeholder="Search design or vendor…" aria-label="Search">
+      <select id="sort" aria-label="Sort">
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price: low → high</option>
+        <option value="price-desc">Price: high → low</option>
+        <option value="vendor">Vendor A–Z</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="count" id="count" style="padding-top:18px"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">No tees match those filters. Try widening your search.</div>
+</main>
+
+<div class="picksbar" id="picksbar">
+  <div class="wrap">
+    <strong id="picksTitle">Your picks</strong>
+    <div class="pickchips" id="pickchips"></div>
+    <button class="clearp" id="clearPicks">Clear all</button>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="note">
+      <b style="color:var(--ink)">Heads up:</b> prices &amp; shipping are approximate and were gathered from public listings on
+      2026-06-07 — always confirm the live price, size availability and delivery cost on the vendor's own page before buying.
+      Vintage originals are one-of-a-kind, so a sold listing may point to a similar piece. Links open the vendor site directly.
+    </div>
+    <div>Sources include the
+      <a href="https://store.massiveattack.com/">official Massive Attack store</a>,
+      <a href="https://us.officialmerchandise.store/collections/massive-attack">Official Merchandise Store US</a>,
+      <a href="https://www.amazon.com/s?k=massive+attack+mezzanine+t-shirt">Amazon</a>,
+      <a href="https://rockbandmerch.com/collections/massive-attack">Rock Band Merch</a>,
+      <a href="https://www.etsy.com/market/massive_attack">Etsy</a>,
+      <a href="https://www.teepublic.com/t-shirts/massive-attack">TeePublic</a>,
+      <a href="https://eyesoremerch.com/bands/m/massive-attack/">Eyesore Merch</a>,
+      <a href="https://www.grailed.com/browse/massive-attack">Grailed</a>,
+      <a href="https://www.strikeanywhere.co/">Strike Anywhere Vintage</a> and eBay.
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Data: 15 curated options ---------- */
+const TEES = [
+  {id:'mezz-white-official', name:'Mezzanine White Tee', vendor:'Official Store', cat:'official',
+   price:30, cur:'$', art:'mezzanine', tone:'white',
+   ship:'Ships from UK · ~5 working-day dispatch · intl shipping calc. at checkout',
+   note:'100% organic ring-spun combed cotton · print-on-demand',
+   url:'https://store.massiveattack.com/products/mezzanine-white-t-shirt-pod-msv', feat:10},
+
+  {id:'rorschach-white', name:'Rorschach White Tee', vendor:'Official Merch US', cat:'official',
+   price:28, cur:'$', art:'rorschach', tone:'white',
+   ship:'Ships from US warehouse · standard 3–7 days',
+   note:'Official 2019 tour artwork',
+   url:'https://us.officialmerchandise.store/collections/massive-attack/products/rorschach-white-t-shirt', feat:9},
+
+  {id:'rorschach-ls-grey', name:'Rorschach Long-Sleeve Grey', vendor:'Official Merch US', cat:'official',
+   price:38, cur:'$', art:'rorschach', tone:'grey',
+   ship:'Ships from US warehouse · standard 3–7 days',
+   note:'Long sleeve · official 2019 tour design',
+   url:'https://us.officialmerchandise.store/collections/massive-attack/products/rorschach-long-sleeve-grey-t-shirt-1', feat:7},
+
+  {id:'bluelines-rbm', name:'Blue Lines Album Tee (Black)', vendor:'Rock Band Merch', cat:'reissue',
+   price:26.95, cur:'$', art:'bluelines', tone:'black',
+   ship:'Ships from US · calculated at checkout (~3–6 days)',
+   note:'Officially licensed · 100% pre-shrunk cotton',
+   url:'https://rockbandmerch.com/products/massive-attack-blue-lines-mens-t-shirt-black', feat:8},
+
+  {id:'mezz-amz-black', name:'Mezzanine Classic Crew (Black)', vendor:'Amazon', cat:'reissue',
+   price:23.99, cur:'$', art:'mezzanine', tone:'black',
+   ship:'Prime · FREE 1–2 day delivery · easy returns',
+   note:'Men’s classic round-neck · cotton',
+   url:'https://www.amazon.com/Massive-Mezzanine-Classic-T-Shirt-Fashion/dp/B0CLXYXXLY', feat:9},
+
+  {id:'mezz-amz-vneck', name:'Mezzanine V-Neck (Women’s)', vendor:'Amazon', cat:'reissue',
+   price:22.99, cur:'$', art:'mezzanine', tone:'black',
+   ship:'Prime · FREE 1–2 day delivery · free returns',
+   note:'Women’s classic V-neck · short sleeve cotton',
+   url:'https://www.amazon.com/Massive-Mezzanine-Classic-T-Shirt-Fashion/dp/B0CL6KRW1J', feat:6},
+
+  {id:'mezz-amz-oversized', name:'Mezzanine Oversized Streetwear', vendor:'Amazon', cat:'reissue',
+   price:25.99, cur:'$', art:'mezzanine', tone:'black',
+   ship:'Prime · FREE 1–2 day delivery',
+   note:'Oversized boxy fit · heavyweight cotton',
+   url:'https://www.amazon.com/Massive-Attack-Mezzanine-Oversized-Streetwear/dp/B0CNKLYC6V', feat:6},
+
+  {id:'mezz-98-reissue', name:'Mezzanine ’98 Euro Tour (Reissue)', vendor:'eBay', cat:'reissue',
+   price:22.99, cur:'$', art:'mezzanine', tone:'black',
+   ship:'Economy shipping · bulk discounts · sizes S–5XL',
+   note:'Screen-printed reissue of the 1998 tour tee',
+   url:'https://www.ebay.com/itm/306120884192', feat:7},
+
+  {id:'bluelines-etsy', name:'Blue Lines Flame Album Tee', vendor:'Etsy', cat:'pod',
+   price:24, cur:'$', art:'bluelines', tone:'navy',
+   ship:'Made-to-order from EU seller · ~1–2 wk delivery',
+   note:'Minimal trip-hop flame print · handmade',
+   url:'https://www.etsy.com/listing/841732726/massive-attack-t-shirt-blue-lines-album', feat:6},
+
+  {id:'100th-teepublic', name:'100th Window Artwork Tee', vendor:'TeePublic', cat:'pod',
+   price:22, cur:'$', art:'window', tone:'black',
+   ship:'Prints in 3–5 days · flat-rate shipping · often on sale (~$16)',
+   note:'90s-style album artwork · many colors & fits',
+   url:'https://www.teepublic.com/t-shirt/43454744-100th-window-artwork-90s-design', feat:6},
+
+  {id:'eyesore-flame', name:'Flame Logo Tee', vendor:'Eyesore Merch', cat:'official',
+   price:23, cur:'$', art:'bluelines', tone:'black',
+   ship:'Ships from UK · worldwide shipping calc. at checkout',
+   note:'Officially licensed · iconic flame logo',
+   url:'https://eyesoremerch.com/bands/m/massive-attack/', feat:7},
+
+  {id:'vtg-mezz-l', name:'Vintage ’90s Mezzanine Tee (L)', vendor:'Etsy', cat:'vintage',
+   price:120, cur:'$', art:'mezzanine', tone:'faded',
+   ship:'One-of-a-kind · single item · ships from seller',
+   note:'Genuine 90s · pit-to-pit 23", length 29.5"',
+   url:'https://www.etsy.com/listing/760015899/vintage-90s-massive-attack-mezzanine-t', feat:8},
+
+  {id:'vtg-soundsystem', name:'Vintage ’95 Soundsystem Tour (XL)', vendor:'Etsy', cat:'vintage',
+   price:95, cur:'$', art:'soundsystem', tone:'faded',
+   ship:'One-of-a-kind · single item · ships from seller',
+   note:'Genuine 1995 tour tee · 100% cotton · size XL',
+   url:'https://www.etsy.com/listing/1141931421/vintage-90s-massive-attack-soundsystem', feat:7},
+
+  {id:'vtg-strike-anywhere', name:'1998 Mezzanine Euro Tour (Washed Black)', vendor:'Strike Anywhere', cat:'vintage',
+   price:150, cur:'$', art:'mezzanine', tone:'faded',
+   ship:'Ships from UK · single vintage piece',
+   note:'Rare original 1998 tour · beautifully washed black',
+   url:'https://www.strikeanywhere.co/products/1998-massive-attack-mezzanine-euro-tour-rare-washed-black-t-shirt-1737727867827', feat:8},
+
+  {id:'vtg-grailed', name:'1998 Mezzanine Euro Tour (Collector)', vendor:'Grailed', cat:'vintage',
+   price:165, cur:'$', art:'mezzanine', tone:'faded',
+   ship:'Seller-shipped · buyer protection · negotiable',
+   note:'Very rare original 1998 European tour grail',
+   url:'https://www.grailed.com/listings/32802400-band-tees-x-very-rare-x-vintage-massive-attack-mezzanine-european-tour-1998', feat:7},
+];
+
+/* ---------- SVG thumbnail generator (reliable, no external images) ---------- */
+function bgFor(tone){
+  switch(tone){
+    case 'white': return ['#ece9e3','#d8d4cc','#26241f'];
+    case 'grey':  return ['#3a3a40','#26262b','#e8e6e1'];
+    case 'navy':  return ['#16243a','#0d1626','#cfe0f2'];
+    case 'faded': return ['#2a2723','#1a1814','#cdbf9f'];
+    default:      return ['#161616','#000000','#f0ede7']; // black
+  }
+}
+function art(kind, tone){
+  const [c1,c2,fg]=bgFor(tone);
+  const acc='#e8503a';
+  let motif='';
+  if(kind==='mezzanine'){ // beetle silhouette
+    motif=`<g fill="${fg}" transform="translate(250 255)">
+      <ellipse cx="0" cy="0" rx="78" ry="108"/>
+      <rect x="-3" y="-108" width="6" height="216" fill="${c1}"/>
+      <circle cx="0" cy="-118" r="26"/>
+      <line x1="-26" y1="-140" x2="-60" y2="-185" stroke="${fg}" stroke-width="7"/>
+      <line x1="26" y1="-140" x2="60" y2="-185" stroke="${fg}" stroke-width="7"/>
+      ${[-80,-40,20,60].map(y=>`<line x1="-78" y1="${y}" x2="-150" y2="${y-18}" stroke="${fg}" stroke-width="7"/><line x1="78" y1="${y}" x2="150" y2="${y-18}" stroke="${fg}" stroke-width="7"/>`).join('')}
+    </g>`;
+  } else if(kind==='rorschach'){ // inkblot
+    motif=`<g fill="${fg}" transform="translate(250 250)">
+      <path d="M0,-120 C70,-130 120,-70 95,-10 C140,20 120,90 60,95 C40,140 -40,140 -60,95 C-120,90 -140,20 -95,-10 C-120,-70 -70,-130 0,-120 Z"/>
+      <circle cx="-45" cy="-20" r="16" fill="${c1}"/><circle cx="45" cy="-20" r="16" fill="${c1}"/>
+      <path d="M0,30 C30,55 -30,55 0,30 Z" fill="${c1}"/>
+    </g>`;
+  } else if(kind==='bluelines'){ // flame
+    motif=`<g transform="translate(250 250)">
+      <path d="M0,-130 C40,-70 90,-60 70,10 C95,30 80,110 0,130 C-80,110 -95,30 -70,10 C-90,-60 -40,-70 0,-130 Z" fill="${acc}"/>
+      <path d="M0,-70 C25,-30 45,-20 32,30 C45,55 25,95 0,100 C-25,95 -45,55 -32,30 C-45,-20 -25,-30 0,-70 Z" fill="${fg}"/>
+    </g>`;
+  } else if(kind==='window'){ // shattered glass
+    motif=`<g stroke="${fg}" stroke-width="4" fill="none" transform="translate(250 250)">
+      <circle cx="0" cy="0" r="118" fill="${c1}"/>
+      ${Array.from({length:12}).map((_,i)=>{const a=i/12*6.283;return `<line x1="0" y1="0" x2="${Math.cos(a)*118}" y2="${Math.sin(a)*118}"/>`}).join('')}
+      <polygon points="0,0 48,-30 70,28" fill="${acc}" stroke="none"/>
+      <circle cx="0" cy="0" r="118"/>
+    </g>`;
+  } else if(kind==='soundsystem'){ // speaker stack
+    motif=`<g fill="none" stroke="${fg}" stroke-width="5" transform="translate(250 250)">
+      <rect x="-90" y="-130" width="180" height="260" rx="8" fill="${c1}"/>
+      <circle cx="0" cy="-70" r="48"/><circle cx="0" cy="-70" r="20" fill="${fg}"/>
+      <circle cx="0" cy="55" r="58"/><circle cx="0" cy="55" r="24" fill="${fg}"/>
+    </g>`;
+  }
+  return `<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" role="img">
+    <defs><radialGradient id="g_${kind}_${tone}" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
+    </radialGradient></defs>
+    <rect width="500" height="500" fill="url(#g_${kind}_${tone})"/>
+    ${motif}
+    <text x="250" y="468" text-anchor="middle" font-family="Inter,sans-serif" font-size="15" letter-spacing="6" fill="${fg}" opacity=".55">MASSIVE ATTACK</text>
+  </svg>`;
+}
+
+/* ---------- Render ---------- */
+const grid=document.getElementById('grid');
+const PICKS=new Set(JSON.parse(localStorage.getItem('ma_picks')||'[]'));
+let state={cat:'all', q:'', sort:'featured'};
+
+const catBadge={official:['Official','b-official'],reissue:['Reissue','b-reissue'],vintage:['Vintage','b-vintage'],pod:['Print-on-demand','b-pod']};
+
+function visible(){
+  let list=TEES.filter(t=>{
+    if(state.cat!=='all'&&t.cat!==state.cat)return false;
+    if(state.q){const s=(t.name+' '+t.vendor+' '+t.note).toLowerCase();if(!s.includes(state.q))return false;}
+    return true;
+  });
+  const by={
+    'price-asc':(a,b)=>a.price-b.price,
+    'price-desc':(a,b)=>b.price-a.price,
+    'vendor':(a,b)=>a.vendor.localeCompare(b.vendor),
+    'featured':(a,b)=>b.feat-a.feat,
+  }[state.sort];
+  return list.sort(by);
+}
+function render(){
+  const list=visible();
+  grid.innerHTML=list.map(t=>{
+    const [blab,bcls]=catBadge[t.cat];
+    const on=PICKS.has(t.id)?'on':'';
+    const price=t.cur+t.price.toFixed(2).replace(/\.00$/,'');
+    return `<article class="card" data-id="${t.id}">
+      <div style="position:relative">
+        <div class="thumb">${art(t.art,t.tone)}</div>
+        <button class="pick-btn ${on}" data-pick="${t.id}" title="Save to picks" aria-label="Save to picks">♥</button>
+      </div>
+      <div class="body">
+        <div class="badges"><span class="badge ${bcls}">${blab}</span></div>
+        <div class="name">${t.name}</div>
+        <div class="vendor">${t.vendor} · ${t.note}</div>
+        <div class="meta">
+          <div class="price">${price} <small>${t.cat==='vintage'?'· one-off':'approx.'}</small></div>
+        </div>
+        <div class="ship">🚚 <span><b>${t.vendor}</b> — ${t.ship}</span></div>
+        <a class="buy" href="${t.url}" target="_blank" rel="noopener">View &amp; Buy →</a>
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('empty').style.display=list.length?'none':'block';
+  document.getElementById('count').textContent=`Showing ${list.length} of ${TEES.length} tees`;
+  bindPicks();
+  renderPicks();
+}
+function bindPicks(){
+  document.querySelectorAll('[data-pick]').forEach(b=>{
+    b.onclick=e=>{e.stopPropagation();const id=b.dataset.pick;
+      PICKS.has(id)?PICKS.delete(id):PICKS.add(id);
+      localStorage.setItem('ma_picks',JSON.stringify([...PICKS]));
+      b.classList.toggle('on');renderPicks();};
+  });
+}
+function renderPicks(){
+  const bar=document.getElementById('picksbar');
+  const chips=document.getElementById('pickchips');
+  const picked=TEES.filter(t=>PICKS.has(t.id));
+  if(!picked.length){bar.classList.remove('show');return;}
+  bar.classList.add('show');
+  const total=picked.reduce((s,t)=>s+t.price,0);
+  document.getElementById('picksTitle').textContent=`Your picks (${picked.length}) · ~$${total.toFixed(0)}`;
+  chips.innerHTML=picked.map(t=>`<a class="pchip" href="${t.url}" target="_blank" rel="noopener">${t.name} — ${t.cur}${t.price}</a>`).join('');
+}
+document.getElementById('clearPicks').onclick=()=>{PICKS.clear();localStorage.setItem('ma_picks','[]');render();};
+
+document.getElementById('catFilters').onclick=e=>{
+  if(!e.target.dataset.cat)return;
+  document.querySelectorAll('#catFilters .chip').forEach(c=>c.classList.remove('active'));
+  e.target.classList.add('active');state.cat=e.target.dataset.cat;render();
+};
+document.getElementById('search').oninput=e=>{state.q=e.target.value.trim().toLowerCase();render();};
+document.getElementById('sort').onchange=e=>{state.sort=e.target.value;render();};
+
+render();
+</script>
+</body>
+</html>
