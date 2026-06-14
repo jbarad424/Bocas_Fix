@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1f6b3b">
+<title>Herb Mentality 🌿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f3d22;
+    --bg2:#155030;
+    --card:#ffffff;
+    --ink:#16331f;
+    --mid:#4a6450;
+    --line:#dfe9e0;
+    --herb:#2faa5a;
+    --herb-dk:#1f6b3b;
+    --herb-lt:#e4f6ea;
+    --gold:#f2b705;
+    --pink:#ef6f8e;
+    --shadow:0 10px 30px rgba(0,0,0,.18);
+    --r:20px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Nunito',system-ui,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #2a8a4e 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #0c8f6f 0%, transparent 55%),
+      linear-gradient(160deg,var(--bg) 0%, var(--bg2) 100%);
+    background-attachment:fixed;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  .leaf-bg{position:fixed;inset:0;pointer-events:none;opacity:.11;font-size:46px;z-index:0;}
+  .leaf-bg span{position:absolute;animation:drift linear infinite;}
+  @keyframes drift{from{transform:translateY(0) rotate(0deg);}to{transform:translateY(-26px) rotate(18deg);}}
+
+  .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 16px calc(120px + env(safe-area-inset-bottom));min-height:100vh;}
+
+  /* ── App bar ── */
+  .bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .logo{font-family:'Fredoka',sans-serif;font-weight:700;color:#fff;font-size:22px;letter-spacing:.3px;display:flex;align-items:center;gap:8px;text-shadow:0 2px 0 rgba(0,0,0,.12);}
+  .logo .sprout{font-size:24px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2));}
+  .conn{font-family:'Nunito';font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#fff;background:rgba(255,255,255,.16);padding:6px 11px;border-radius:999px;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(242,183,5,.6);}
+  .dot.live{background:#7CFFB0;animation:pulse 2s infinite;}
+  .dot.off{background:#ff6b6b;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(124,255,176,.55);}70%{box-shadow:0 0 0 8px rgba(124,255,176,0);}100%{box-shadow:0 0 0 0 rgba(124,255,176,0);}}
+
+  /* ── Card ── */
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:24px 20px;margin-bottom:16px;animation:rise .35s cubic-bezier(.2,.8,.2,1);}
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
+
+  h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:30px;line-height:1.05;color:var(--ink);margin-bottom:6px;}
+  h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:21px;color:var(--ink);margin-bottom:4px;}
+  .sub{color:var(--mid);font-size:14.5px;font-weight:600;margin-bottom:18px;line-height:1.5;}
+  .eyebrow{font-weight:900;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--herb);margin-bottom:8px;}
+
+  label{display:block;font-weight:800;font-size:13px;color:var(--mid);margin:0 0 7px 2px;text-transform:uppercase;letter-spacing:.5px;}
+  input[type=text]{
+    width:100%;font-family:'Nunito';font-weight:700;font-size:18px;color:var(--ink);
+    background:#f4f8f5;border:2.5px solid var(--line);border-radius:14px;padding:15px 16px;outline:none;transition:.15s;
+  }
+  input[type=text]:focus{border-color:var(--herb);background:#fff;box-shadow:0 0 0 4px var(--herb-lt);}
+  input::placeholder{color:#aab8ac;font-weight:600;}
+
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;
+    background:linear-gradient(180deg,var(--herb) 0%, var(--herb-dk) 100%);
+    color:#fff;border:none;border-radius:15px;padding:16px;cursor:pointer;
+    box-shadow:0 5px 0 #14502c, 0 8px 18px rgba(0,0,0,.18);
+    transition:transform .08s, box-shadow .08s;user-select:none;
+  }
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #14502c, 0 3px 8px rgba(0,0,0,.18);}
+  .btn[disabled]{background:#e7efe8;color:#9bb0a0;box-shadow:none;border:2px solid var(--line);cursor:not-allowed;text-shadow:none;}
+  .btn[disabled]:active{transform:none;}
+  .btn.alt{background:#fff;color:var(--herb-dk);box-shadow:0 5px 0 #cfe3d4,0 8px 16px rgba(0,0,0,.1);border:2px solid var(--line);}
+  .btn.alt:active{box-shadow:0 1px 0 #cfe3d4;}
+  .btn.gold{background:linear-gradient(180deg,#ffd23f,#f2b705);color:#5a4500;box-shadow:0 5px 0 #c79400,0 8px 18px rgba(0,0,0,.18);text-shadow:none;}
+  .btn.gold:active{box-shadow:0 1px 0 #c79400;}
+  .btn.ghost{background:transparent;color:var(--mid);box-shadow:none;border:2px solid var(--line);font-size:15px;padding:14px;}
+  .btn.ghost:active{transform:translateY(2px);}
+  .btn.sm{font-size:15px;padding:12px 14px;}
+  .row{display:flex;gap:10px;}
+  .row>*{flex:1;}
+  .mt{margin-top:12px;}
+
+  .hint{text-align:center;color:var(--mid);font-size:13px;font-weight:700;margin-top:14px;}
+  .hint a{color:var(--herb-dk);}
+
+  /* ── Player chips ── */
+  .players{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 6px;}
+  .pchip{display:flex;align-items:center;gap:8px;background:var(--herb-lt);border:2px solid #c9ebd4;border-radius:999px;padding:7px 14px 7px 8px;font-weight:800;font-size:15px;color:var(--herb-dk);animation:rise .3s;}
+  .pchip .av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;background:#fff;flex:none;}
+  .pchip.me{background:var(--herb);color:#fff;border-color:var(--herb-dk);}
+  .pchip.me .av{background:rgba(255,255,255,.25);}
+  .pchip.dead{opacity:.4;filter:grayscale(1);}
+  .pchip .sc{font-size:12px;background:#fff;color:var(--herb-dk);border-radius:999px;padding:1px 8px;font-weight:900;margin-left:1px;}
+
+  /* ── Scoreboard ── */
+  .score-row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);}
+  .score-row:last-child{border-bottom:none;}
+  .score-row .av{width:38px;height:38px;border-radius:50%;background:var(--herb-lt);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none;}
+  .score-row .nm{font-weight:800;font-size:17px;flex:1;}
+  .score-row .pts{font-family:'Fredoka';font-weight:700;font-size:22px;color:var(--herb-dk);}
+  .score-row.lead .pts{color:var(--gold);}
+  .score-row .crown{font-size:18px;}
+  .bar-track{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:5px;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--herb),var(--herb-dk));border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1);}
+
+  /* ── Turn banner ── */
+  .turn{background:var(--herb-lt);border:2px dashed #aadcb9;border-radius:16px;padding:16px;text-align:center;margin-bottom:16px;}
+  .turn .who{font-family:'Fredoka';font-weight:700;font-size:24px;color:var(--herb-dk);}
+  .turn .lbl{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--herb);}
+
+  .category-display{font-family:'Fredoka';font-weight:600;font-size:26px;text-align:center;color:var(--ink);background:linear-gradient(180deg,#fff,#f4f8f5);border:2px solid var(--line);border-radius:16px;padding:20px 16px;margin-bottom:18px;line-height:1.2;}
+  .category-display small{display:block;font-family:'Nunito';font-weight:800;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--herb);margin-bottom:8px;}
+
+  .waitlist{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px;}
+  .tick{display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px;background:#f4f8f5;border:2px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--mid);}
+  .tick.done{background:var(--herb-lt);border-color:#aadcb9;color:var(--herb-dk);}
+  .tick .st{font-size:14px;}
+
+  /* ── Countdown ── */
+  .countdown{position:fixed;inset:0;background:rgba(10,40,24,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(4px);}
+  .cd-num{font-family:'Fredoka';font-weight:700;font-size:38vw;color:#fff;line-height:1;text-shadow:0 8px 24px rgba(0,0,0,.4);animation:pop .6s cubic-bezier(.2,1.4,.4,1);}
+  .cd-go{font-family:'Fredoka';font-weight:700;font-size:30vw;color:var(--gold);text-shadow:0 6px 20px rgba(242,183,5,.4);animation:pop .45s cubic-bezier(.2,1.6,.4,1);}
+  .cd-cap{color:#cfead8;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:14px;margin-top:10px;}
+  @keyframes pop{from{transform:scale(.3);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+  /* ── Reveal ── */
+  .group{border-radius:16px;border:2px solid var(--line);padding:14px 16px;margin-bottom:12px;animation:rise .4s both;}
+  .group.win{border-color:var(--herb);background:var(--herb-lt);animation:rise .4s both, winpop .5s .35s both;}
+  @keyframes winpop{0%{box-shadow:0 0 0 0 rgba(47,170,90,0);}40%{transform:scale(1.03);box-shadow:0 0 0 6px rgba(47,170,90,.18);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(47,170,90,0);}}
+  .group.solo{border-color:#f7c9d4;background:#fff3f6;}
+  .group .ghead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .group .gans{font-family:'Fredoka';font-weight:600;font-size:20px;color:var(--ink);text-transform:capitalize;}
+  .group .gtag{font-weight:900;font-size:11px;letter-spacing:.6px;text-transform:uppercase;padding:4px 9px;border-radius:999px;}
+  .gtag.herd{background:var(--herb);color:#fff;}
+  .gtag.cow{background:var(--pink);color:#fff;}
+  .gtag.none{background:var(--line);color:var(--mid);}
+  .group .gpeople{display:flex;flex-wrap:wrap;gap:7px;}
+  .gp{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:4px 11px 4px 5px;font-weight:800;font-size:14px;}
+  .gp .av{width:22px;height:22px;border-radius:50%;background:var(--herb-lt);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .gp .plus{color:var(--herb-dk);font-weight:900;}
+  .group.win .gp{border-color:#aadcb9;}
+
+  .netbanner{display:none;background:#fff4d6;border:2px solid #f3d98a;color:#8a6d11;font-weight:800;font-size:13px;text-align:center;padding:9px 12px;border-radius:12px;margin-bottom:14px;}
+  .netbanner.show{display:block;animation:rise .3s;}
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#16331f;color:#fff;font-weight:800;font-size:14px;padding:12px 20px;border-radius:999px;box-shadow:var(--shadow);z-index:80;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+
+  .winner-hero{text-align:center;padding:10px 0 4px;}
+  .winner-hero .trophy{font-size:64px;animation:bounce 1.4s infinite;}
+  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .winner-hero .wname{font-family:'Fredoka';font-weight:700;font-size:34px;color:var(--herb-dk);margin:6px 0 2px;}
+  .winner-hero .wsub{color:var(--mid);font-weight:800;}
+
+  .pill-info{display:flex;gap:8px;align-items:center;justify-content:center;background:#f4f8f5;border:2px solid var(--line);border-radius:14px;padding:11px;font-weight:800;font-size:14px;color:var(--mid);margin-bottom:14px;}
+  .pill-info code{font-family:'Fredoka';font-size:20px;letter-spacing:3px;color:var(--herb-dk);background:#fff;border:2px solid var(--line);border-radius:8px;padding:2px 10px;}
+
+  .footer-note{text-align:center;color:rgba(255,255,255,.55);font-size:12px;font-weight:700;margin-top:8px;line-height:1.5;}
+  .footer-note a{color:rgba(255,255,255,.8);}
+
+  .rules{font-size:13.5px;color:var(--mid);font-weight:600;line-height:1.6;}
+  .rules b{color:var(--ink);}
+  details{margin-top:8px;}
+  summary{font-weight:800;color:var(--herb-dk);cursor:pointer;font-size:14px;list-style:none;}
+  summary::-webkit-details-marker{display:none;}
+  .you-tag{font-size:11px;background:var(--gold);color:#5a4500;border-radius:999px;padding:1px 7px;font-weight:900;margin-left:4px;}
+  .spin{display:inline-block;animation:spin 1.1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="leaf-bg" id="leafBg"></div>
+<div class="wrap">
+  <div class="bar">
+    <div class="logo"><span class="sprout">🌿</span> Herb Mentality</div>
+    <div class="conn"><span class="dot" id="connDot"></span><span id="connTxt">…</span></div>
+  </div>
+  <div class="netbanner" id="netBanner">🌿 Reconnecting to the herd…</div>
+  <div id="view"></div>
+  <div class="footer-note" id="foot"></div>
+</div>
+<div id="overlay"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/mqtt@5.7.0/dist/mqtt.min.js"></script>
+<script>window.mqtt||document.write('<script src="https://cdn.jsdelivr.net/npm/mqtt@5.7.0/dist/mqtt.min.js"><\/script>');</script>
+<script>
+"use strict";
+/* ============================================================
+   HERB MENTALITY — say what the herd says.
+   Serverless multiplayer over a public MQTT broker.
+   Host-authoritative state machine with host migration.
+   ============================================================ */
+
+/* ---------- tiny helpers ---------- */
+const $ = sel => document.querySelector(sel);
+const view = $("#view");
+const overlay = $("#overlay");
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now = () => Date.now();
+const norm = s => String(s||"").trim().toLowerCase().replace(/\s+/g," ").replace(/[.!?]+$/,"");
+const rid = (n=4)=>{const a="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<n;i++)s+=a[Math.floor(Math.random()*a.length)];return s;};
+const EMOJI = ["🌿","🍀","🌱","🍃","🌾","🌻","🌼","🪴","🍄","🌵","🦋","🐝","🐸","🦜","🦊","🐢","🦔","🐙","🌶️","🥦","🥑","🍋"];
+const avatarFor = id => EMOJI[Math.abs([...id].reduce((a,c)=>a*31+c.charCodeAt(0),7))%EMOJI.length];
+
+const CATEGORY_IDEAS = [
+  "Least favorite airline","A topping that ruins pizza","Best Disney movie",
+  "An overrated tourist destination","First thing you'd buy after winning the lottery",
+  "Most annoying household chore","A celebrity everyone secretly dislikes",
+  "Best ice cream flavor","Worst day of the week","A movie you can rewatch forever",
+  "Most useless superpower","Best pizza topping","A fruit that's overrated",
+  "Scariest animal","Best decade for music","Worst fast food chain",
+  "A word people overuse","Best season of the year","Most boring sport to watch",
+  "A snack you can't stop eating","Worst color for a car","Best app on your phone"
+];
+const WIN_SCORE = 10;
+const STALE = 11000;      // a player is considered "gone" after this long with no heartbeat
+const HB_MS = 2500;       // heartbeat interval (≈4 beats before STALE)
+const NO_HOST_MS = 9000;  // no host heartbeat for this long → elect a new one
+
+/* ---------- persistent identity ---------- */
+const ME = {
+  id: localStorage.getItem("herb_id") || (()=>{const v="p"+rid(6)+Date.now().toString(36).slice(-3);localStorage.setItem("herb_id",v);return v;})(),
+  name: localStorage.getItem("herb_name") || ""
+};
+
+/* ---------- decorative leaves ---------- */
+(function(){const b=$("#leafBg");const items=["🌿","🍃","🌱","🍀","🌾"];let h="";for(let i=0;i<14;i++){const dur=(8+Math.random()*9).toFixed(1),del=(-Math.random()*8).toFixed(1);h+=`<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${dur}s;animation-delay:${del}s;animation-direction:alternate">${items[i%items.length]}</span>`;}b.innerHTML=h;})();
+
+/* ============================================================
+   NET — MQTT transport. Topics scoped by room.
+   ============================================================ */
+const BROKERS = [
+  "wss://broker.emqx.io:8084/mqtt",
+  "wss://broker.hivemq.com:8884/mqtt",
+  "wss://test.mosquitto.org:8081/mqtt"
+];
+const Net = {
+  client:null, room:null, brokerIdx:0, connected:false,
+  onState:null, onAction:null, onStatus:null,
+  tState(){return `herb/${this.room}/state`;},
+  tAct(){return `herb/${this.room}/act`;},
+  connect(room){
+    this.room = room;
+    this._open();
+  },
+  _open(){
+    const url = BROKERS[this.brokerIdx % BROKERS.length];
+    const cid = "herb_"+ME.id+"_"+rid(4);
+    this._status("connecting");
+    try{
+      this.client = mqtt.connect(url,{clientId:cid,clean:true,reconnectPeriod:2500,connectTimeout:8000,keepalive:30});
+    }catch(e){ this._fallback(); return; }
+    const c = this.client;
+    let settled=false;
+    const failTimer = setTimeout(()=>{ if(!settled){ settled=true; try{c.end(true);}catch(e){} this._fallback(); } }, 9000);
+    c.on("connect",()=>{ settled=true; clearTimeout(failTimer); this.connected=true; this._status("connected");
+      c.subscribe(this.tState(),{qos:0});
+      c.subscribe(this.tAct(),{qos:0});
+    });
+    c.on("reconnect",()=>this._status("connecting"));
+    c.on("close",()=>{ this.connected=false; this._status("offline"); });
+    c.on("error",()=>{ if(!settled){ settled=true; clearTimeout(failTimer); try{c.end(true);}catch(e){} this._fallback(); } });
+    c.on("message",(topic,buf)=>{
+      let msg; try{ msg = JSON.parse(buf.toString()); }catch(e){ return; }
+      if(topic===this.tState() && this.onState) this.onState(msg);
+      else if(topic===this.tAct() && this.onAction) this.onAction(msg);
+    });
+  },
+  _fallback(){
+    this.brokerIdx++;
+    if(this.brokerIdx>=BROKERS.length*2){ this._status("offline"); return; }
+    setTimeout(()=>this._open(), 800);
+  },
+  _status(s){ if(this.onStatus) this.onStatus(s); },
+  pubState(state){ if(this.client&&this.connected) this.client.publish(this.tState(), JSON.stringify(state), {qos:0,retain:true}); },
+  pubAct(action){ if(this.client&&this.connected) this.client.publish(this.tAct(), JSON.stringify(action), {qos:0}); },
+  clearRetained(){ if(this.client&&this.connected) this.client.publish(this.tState(),"",{qos:0,retain:true}); }
+};
+
+/* ============================================================
+   GAME — shared state + host-authoritative reducer.
+   ============================================================ */
+const Game = {
+  room:null,
+  state:null,          // authoritative state (mirror of latest)
+  isHost:false,
+  lastStateAt:0,       // when we last heard from a host
+  hbTimer:null, hostTimer:null,
+
+  freshState(room){
+    return {
+      v:1, room, hostId:ME.id, ts:now(),
+      phase:"lobby",
+      players:{},               // id -> {name,score,alive,seen,joined}
+      order:[],                 // join order of ids
+      turnIndex:0,
+      readerId:null,
+      category:"",
+      answers:{},               // id -> text (only populated/relevant in answer/reveal)
+      submitted:{},             // id -> true (during answer phase, public)
+      countdownAt:0,
+      reveal:null,              // computed reveal payload
+      winners:[],
+      winScore:WIN_SCORE
+    };
+  },
+
+  start(room, asHost){
+    this.room = room;
+    Net.onState = m => this.onState(m);
+    Net.onAction = m => this.onAction(m);
+    Net.onStatus = s => {
+      UI.setConn(s);
+      if(s==="connected"){
+        // (re)announce presence and, if hosting, re-publish authoritative state
+        Net.pubAct({t:"join", id:ME.id, name:ME.name, at:now()});
+        if(this.isHost && this.state) this.broadcast();
+      }
+    };
+    Net.connect(room);
+
+    if(asHost){
+      this.isHost = true;
+      this.state = this.freshState(room);
+      this.applyJoin(ME.id, ME.name);
+      this.broadcast();
+    }
+    // heartbeat — announce presence
+    this.hbTimer = setInterval(()=>{ Net.pubAct({t:"hb", id:ME.id, name:ME.name, at:now()}); }, HB_MS);
+    Net.pubAct({t:"join", id:ME.id, name:ME.name, at:now()});
+
+    // host watchdog: if no host heartbeat for a while, claim host using last known state
+    this.hostTimer = setInterval(()=>this.hostWatchdog(), 2500);
+
+    // host loop: prune stale players + periodic rebroadcast
+    setInterval(()=>{ if(this.isHost){ this.pruneAndKeepAlive(); } }, 4000);
+  },
+
+  /* ---- inbound retained/broadcast state ---- */
+  onState(s){
+    if(!s || s.room!==this.room) return;
+    this.lastStateAt = now();
+    // If a remote host exists and isn't me, accept their state and step down.
+    if(s.hostId && s.hostId!==ME.id){
+      if(this.isHost){
+        // conflict: the lexicographically smaller id stays host. The survivor
+        // merges any players the other host saw so nobody's score is lost.
+        if(ME.id < s.hostId){ this.mergePlayers(s); this.broadcast(); return; }
+        this.isHost = false;
+      }
+      // ignore stale/duplicate retained deliveries that are older than what we have
+      if(this.state && s.ts && this.state.ts && s.ts < this.state.ts) return;
+      this.state = s;
+      this.ensureSelfRegistered();
+      UI.render();
+    }
+  },
+
+  // union remote players into our authoritative state (keep the higher score)
+  mergePlayers(remote){
+    if(!remote || !remote.players) return; const st=this.state;
+    Object.keys(remote.players).forEach(id=>{
+      const r=remote.players[id];
+      if(!st.players[id]){ st.players[id]=r; if(!st.order.includes(id)) st.order.push(id); }
+      else { st.players[id].score=Math.max(st.players[id].score, r.score||0);
+             st.players[id].seen=Math.max(st.players[id].seen||0, r.seen||0); }
+    });
+  },
+
+  ensureSelfRegistered(){
+    if(this.state && !this.state.players[ME.id]){
+      Net.pubAct({t:"join", id:ME.id, name:ME.name, at:now()});
+    }
+  },
+
+  hostWatchdog(){
+    if(this.isHost) return;
+    if(!this.room) return;
+    // No host heartbeat heard recently → elect a new host.
+    if(now()-this.lastStateAt > NO_HOST_MS){
+      const st = this.state;
+      // Determine candidate set: alive players we know about (fallback: just me)
+      let candidates = [ME.id];
+      if(st && st.players){
+        candidates = Object.keys(st.players).filter(id=>{
+          const p=st.players[id]; return p && (now()-(p.seen||0) < STALE);
+        });
+        if(!candidates.includes(ME.id)) candidates.push(ME.id);
+      }
+      candidates.sort();
+      if(candidates[0]===ME.id){
+        // I'm the elected host. Seed from last known state.
+        this.isHost = true;
+        this.state = st ? JSON.parse(JSON.stringify(st)) : this.freshState(this.room);
+        this.state.hostId = ME.id;
+        this.applyJoin(ME.id, ME.name);
+        UI.toast("You're hosting now 🌿");
+        // a countdown's reveal timer died with the old host — resume it
+        if(this.state.phase==="countdown"){
+          const left = Math.max(0, 3300-(now()-(this.state.countdownAt||0)));
+          setTimeout(()=>{ if(this.isHost && this.state.phase==="countdown") this.doReveal(); }, left);
+        }
+        this.broadcast();
+      }
+    }
+  },
+
+  /* ---- HOST: action handling ---- */
+  onAction(a){
+    if(!this.isHost || !a) return;
+    const st = this.state;
+    switch(a.t){
+      case "join": this.applyJoin(a.id, a.name); break;
+      case "hb": {
+        const p = st.players[a.id];
+        if(p){ p.seen=now(); if(!p.alive){p.alive=true;} if(a.name&&a.name!==p.name)p.name=a.name; }
+        else { this.applyJoin(a.id, a.name); return; } // applyJoin broadcasts
+        break;
+      }
+      case "leave": { if(st.players[a.id]){ st.players[a.id].alive=false; } break; }
+      case "start": if(this.knownPlayer(a.id)) this.startGame(); return;
+      case "category":
+        if(st.phase==="category" && a.id===st.readerId && a.category && a.category.trim()){
+          st.category = a.category.trim().slice(0,120);
+          st.phase="answer"; st.answers={}; st.submitted={};
+        } else return;
+        break;
+      case "answer":
+        if(st.phase==="answer" && st.players[a.id] && st.players[a.id].alive){
+          st.answers[a.id] = String(a.text||"").trim().slice(0,80);
+          st.submitted[a.id] = true;
+          // auto-advance if everyone alive has answered
+          if(this.allAnswered()){ this.beginCountdown(); return; }
+        } else return;
+        break;
+      case "reveal":
+        if(st.phase==="answer" && this.knownPlayer(a.id)){ this.beginCountdown(); return; }
+        else return;
+      case "next": if(st.phase==="reveal" && this.knownPlayer(a.id)){ this.nextRound(); return; } else return;
+      case "again": if(st.phase==="gameover" && this.knownPlayer(a.id)){ this.playAgain(); return; } else return;
+      default: return;
+    }
+    this.broadcast();
+  },
+
+  applyJoin(id, name){
+    const st = this.state;
+    if(!st.players[id]){
+      st.players[id] = { name:(name||"Player").slice(0,20), score:0, alive:true, seen:now(), joined:now() };
+      if(!st.order.includes(id)) st.order.push(id);
+    } else {
+      st.players[id].alive = true; st.players[id].seen=now();
+      if(name) st.players[id].name = name.slice(0,20);
+    }
+    this.broadcast();
+  },
+
+  knownPlayer(id){ return !!(this.state && this.state.players[id]); },
+
+  aliveIds(){
+    const st=this.state;
+    return st.order.filter(id=>st.players[id] && st.players[id].alive && (now()-(st.players[id].seen||0)<STALE));
+  },
+
+  allAnswered(){
+    const alive = this.aliveIds();
+    if(alive.length===0) return false;
+    return alive.every(id=>st_has(this.state.submitted,id));
+  },
+
+  startGame(){
+    const st=this.state;
+    const alive = this.aliveIds();
+    if(alive.length<2){ return; }
+    // reset scores fresh start
+    Object.values(st.players).forEach(p=>p.score=0);
+    st.turnIndex = 0;
+    st.readerId = alive[0];
+    st.phase="category"; st.category=""; st.answers={}; st.submitted={}; st.reveal=null; st.winners=[];
+    this.broadcast();
+  },
+
+  beginCountdown(){
+    const st=this.state;
+    st.phase="countdown"; st.countdownAt = now();
+    this.broadcast();
+    setTimeout(()=>{ if(this.isHost && this.state.phase==="countdown") this.doReveal(); }, 3300);
+  },
+
+  doReveal(){
+    const st=this.state;
+    // group by normalized answer among players who answered
+    const groups = {}; // key -> {answer, ids:[], blank}
+    Object.keys(st.answers).forEach(id=>{
+      const raw = st.answers[id];
+      const key = norm(raw) || "(blank)";
+      if(!groups[key]) groups[key] = { answer: raw||"—", ids:[], blank:(key==="(blank)") };
+      groups[key].ids.push(id);
+    });
+    const arr = Object.values(groups);
+    // largest NON-blank group; a herd needs >=2 people AND a single unique top group
+    let maxN = 0;
+    arr.forEach(g=>{ if(!g.blank && g.ids.length>maxN) maxN=g.ids.length; });
+    const topGroups = arr.filter(g=>!g.blank && g.ids.length===maxN && maxN>=2);
+    const herd = topGroups.length===1; // ties for the lead score nobody (must be a clear majority)
+    const soloKeys = arr.filter(g=>g.ids.length===1).length;
+    arr.forEach(g=>{
+      g.win = herd && !g.blank && g.ids.length===maxN;
+      g.solo = (g.ids.length===1);
+      if(g.win){ g.ids.forEach(id=>{ if(st.players[id]) st.players[id].score++; }); }
+    });
+    // pink cow: exactly one person was the lone wolf when a clear herd existed
+    arr.forEach(g=>{ g.cow = herd && !g.blank && g.ids.length===1 && soloKeys===1; });
+    // sort: winners first, then by size desc, blanks last
+    arr.sort((a,b)=> (b.win-a.win) || (a.blank-b.blank) || (b.ids.length-a.ids.length));
+    st.reveal = { groups: arr, herd, maxN, tie: (maxN>=2 && topGroups.length>1) };
+    st.phase="reveal";
+    // check win
+    const winners = st.order.filter(id=>st.players[id] && st.players[id].score>=st.winScore);
+    if(winners.length){
+      // highest score wins; ties share the crown
+      let top=0; st.order.forEach(id=>{ if(st.players[id]) top=Math.max(top,st.players[id].score); });
+      st.winners = st.order.filter(id=>st.players[id]&&st.players[id].score===top);
+      st.phase="gameover";
+    }
+    this.broadcast();
+  },
+
+  nextRound(){
+    const st=this.state;
+    const alive = this.aliveIds();
+    if(alive.length<2){ st.phase="lobby"; this.broadcast(); return; }
+    // advance reader to next alive player after current reader in order
+    let idx = st.order.indexOf(st.readerId);
+    let found = false;
+    for(let step=0; step<st.order.length; step++){
+      idx = (idx+1)%st.order.length;
+      const cand = st.order[idx];
+      if(alive.includes(cand)){ st.readerId=cand; st.turnIndex=idx; found=true; break; }
+    }
+    if(!found){ st.readerId = alive[0]; st.turnIndex = st.order.indexOf(alive[0]); }
+    st.phase="category"; st.category=""; st.answers={}; st.submitted={}; st.reveal=null;
+    this.broadcast();
+  },
+
+  playAgain(){
+    const st=this.state;
+    Object.values(st.players).forEach(p=>p.score=0);
+    st.winners=[]; st.reveal=null;
+    this.startGame();
+  },
+
+  pruneAndKeepAlive(){
+    const st=this.state; let changed=false;
+    Object.keys(st.players).forEach(id=>{
+      const p=st.players[id];
+      const stale = now()-(p.seen||0) > STALE;
+      if(stale && p.alive){ p.alive=false; changed=true; }
+    });
+    // if current reader dropped during their turn, keep the game moving
+    if((st.phase==="category"||st.phase==="answer") && st.readerId && st.players[st.readerId] && !st.players[st.readerId].alive){
+      if(this.aliveIds().length>=2){
+        // mid-answer with submissions already in? reveal what we have instead of trashing the round
+        if(st.phase==="answer" && Object.keys(st.answers).length>=2){ this.beginCountdown(); }
+        else { this.nextRound(); }
+        return;
+      }
+    }
+    // also auto-advance answer phase once everyone still present has locked in
+    if(st.phase==="answer" && this.allAnswered()){ this.beginCountdown(); return; }
+    st.ts = now();
+    Net.pubState(st); // keepalive heartbeat regardless
+    if(changed) UI.render();
+    else UI.render(); // keep presence timers fresh
+  },
+
+  broadcast(){
+    if(!this.isHost) return;
+    this.state.ts = now();
+    this.state.hostId = ME.id;
+    Net.pubState(this.state);
+    UI.render();
+  },
+
+  /* ---- client action senders ---- */
+  send(action){ Net.pubAct(Object.assign({id:ME.id},action)); }
+};
+function st_has(o,k){return Object.prototype.hasOwnProperty.call(o,k)&&o[k];}
+
+/* ============================================================
+   UI — screens
+   ============================================================ */
+const UI = {
+  conn:"connecting",
+  setConn(s){
+    this.conn=s;
+    const dot=$("#connDot"), txt=$("#connTxt");
+    if(s==="connected"){dot.className="dot live";txt.textContent="Live";}
+    else if(s==="connecting"){dot.className="dot";txt.textContent="Connecting";}
+    else {dot.className="dot off";txt.textContent="Offline";}
+    const banner=$("#netBanner");
+    if(banner) banner.classList.toggle("show", !!Game.room && s!=="connected");
+  },
+  toastTimer:null,
+  toast(msg){
+    const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+    clearTimeout(this.toastTimer); this.toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+  },
+
+  render(){
+    const st = Game.state;
+    if(!Game.room){ this.renderHome(); return; }
+    if(!st || !st.players[ME.id]){ this.renderJoining(); return; }
+    overlay.innerHTML="";
+    switch(st.phase){
+      case "lobby": this.renderLobby(); break;
+      case "category": this.renderCategory(); break;
+      case "answer": this.renderAnswer(); break;
+      case "countdown": this.renderCountdown(); break;
+      case "reveal": this.renderReveal(); break;
+      case "gameover": this.renderGameover(); break;
+      default: this.renderLobby();
+    }
+    this.renderFoot();
+  },
+
+  renderFoot(){
+    const f=$("#foot");
+    if(Game.room){
+      f.innerHTML = `Room <b style="color:#fff">${esc(Game.room)}</b> · ${Game.isHost?"you're hosting":"connected"} · <a href="#" id="leaveLink">leave</a>`;
+      const l=$("#leaveLink"); if(l) l.onclick=(e)=>{e.preventDefault();this.confirmLeave();};
+    } else f.innerHTML = "No sign-up. Just a name. 🌿";
+  },
+
+  confirmLeave(){
+    Game.send({t:"leave"});
+    location.hash="";
+    location.reload();
+  },
+
+  /* ---------- HOME ---------- */
+  renderHome(){
+    const savedName = esc(ME.name);
+    view.innerHTML = `
+      <div class="card">
+        <div class="eyebrow">Party game · 3+ players</div>
+        <h1>Herb&nbsp;Mentality 🌿</h1>
+        <p class="sub">Someone names a category. Everyone secretly answers. Match the <b>herd</b> and you score. First to ${WIN_SCORE} wins.</p>
+        <label for="nameIn">Your name</label>
+        <input type="text" id="nameIn" maxlength="20" placeholder="e.g. Justin" value="${savedName}" autocomplete="off">
+        <button class="btn gold mt" id="createBtn">🌱 Create a room</button>
+        <div class="row mt">
+          <input type="text" id="codeIn" maxlength="4" placeholder="CODE" style="text-transform:uppercase;text-align:center;letter-spacing:4px;font-family:'Fredoka'" autocomplete="off">
+          <button class="btn alt" id="joinBtn" style="flex:1.3">Join</button>
+        </div>
+        <details>
+          <summary>How to play</summary>
+          <p class="rules mt">
+            <b>1.</b> One person creates a room and shares the link (WhatsApp, wherever).<br>
+            <b>2.</b> Everyone opens it, types a name — no sign-in.<br>
+            <b>3.</b> On your turn you name a category, like <i>"least favorite airline."</i><br>
+            <b>4.</b> Everyone secretly types their answer.<br>
+            <b>5.</b> 3… 2… 1… all answers flip at once. Everyone who matched the <b>biggest group</b> scores a point.<br>
+            <b>6.</b> Be with the herd. First to ${WIN_SCORE} points wins. 🏆
+          </p>
+        </details>
+      </div>
+      <div class="hint">Keep this tab open if you create the room — you're the host.</div>
+    `;
+    $("#createBtn").onclick=()=>{
+      const n = $("#nameIn").value.trim();
+      if(!n){ this.toast("Type your name first 🌿"); $("#nameIn").focus(); return; }
+      ME.name=n; localStorage.setItem("herb_name",n);
+      const room = rid(4);
+      location.hash = room;
+      Game.start(room, true);
+      this.render();
+    };
+    $("#joinBtn").onclick=()=>{
+      const n = $("#nameIn").value.trim();
+      const code = $("#codeIn").value.trim().toUpperCase();
+      if(!n){ this.toast("Type your name first 🌿"); $("#nameIn").focus(); return; }
+      if(code.length<4){ this.toast("Enter the 4-letter room code"); $("#codeIn").focus(); return; }
+      ME.name=n; localStorage.setItem("herb_name",n);
+      location.hash = code;
+      Game.start(code, false);
+      this.renderJoining();
+    };
+  },
+
+  renderJoining(){
+    view.innerHTML = `
+      <div class="card" style="text-align:center">
+        <div style="font-size:46px" class="spin">🌿</div>
+        <h2 style="margin-top:10px">Joining room ${esc(Game.room)}…</h2>
+        <p class="sub" style="margin-top:6px">Looking for the herd. If nobody's home, the room may not be created yet.</p>
+        <button class="btn alt sm" id="hostAnyway">Create this room myself</button>
+        <div class="hint"><a href="#" id="backHome">← back</a></div>
+      </div>`;
+    $("#hostAnyway").onclick=()=>{ Game.isHost=true; Game.state=Game.freshState(Game.room); Game.applyJoin(ME.id,ME.name); Game.broadcast(); this.render(); };
+    $("#backHome").onclick=(e)=>{e.preventDefault();location.hash="";location.reload();};
+  },
+
+  shareBlock(){
+    const url = location.href;
+    const waText = encodeURIComponent(`🌿 Join my Herb Mentality game!\nRoom ${Game.room}: ${url}`);
+    return `
+      <div class="pill-info">Room code <code>${esc(Game.room)}</code></div>
+      <div class="row">
+        <button class="btn alt sm" id="copyBtn">🔗 Copy link</button>
+        <a class="btn gold sm" style="text-decoration:none" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      </div>`;
+  },
+  wireShare(){
+    const c=$("#copyBtn");
+    if(c) c.onclick=async()=>{
+      try{ await navigator.clipboard.writeText(location.href); this.toast("Link copied 🌿"); }
+      catch(e){ this.toast(location.href); }
+    };
+  },
+
+  playerChips(){
+    const st=Game.state;
+    return st.order.map(id=>{
+      const p=st.players[id]; if(!p) return "";
+      const alive = p.alive && (now()-(p.seen||0)<STALE);
+      const me = id===ME.id;
+      return `<div class="pchip ${me?'me':''} ${alive?'':'dead'}"><span class="av">${avatarFor(id)}</span>${esc(p.name)}${me?'<span class="you-tag">YOU</span>':''}</div>`;
+    }).join("");
+  },
+
+  /* ---------- LOBBY ---------- */
+  renderLobby(){
+    const st=Game.state;
+    const alive = Game.isHost ? Game.aliveIds() : st.order.filter(id=>st.players[id]&&st.players[id].alive);
+    const enough = alive.length>=2;
+    view.innerHTML = `
+      <div class="card">
+        <div class="eyebrow">Lobby · waiting for the herd</div>
+        <h2>Who's here 🌿</h2>
+        <p class="sub" style="margin-bottom:12px">${alive.length} player${alive.length===1?"":"s"} signed in. Share the link to get everyone in.</p>
+        <div class="players">${this.playerChips()}</div>
+        ${this.shareBlock()}
+        <button class="btn mt" id="startBtn" ${enough?"":"disabled"}>${enough?"🚀 Start game":"Waiting for players…"}</button>
+        ${enough?"":'<div class="hint">Waiting for at least one more player to join.</div>'}
+      </div>`;
+    this.wireShare();
+    const s=$("#startBtn"); if(s) s.onclick=()=>Game.send({t:"start"});
+  },
+
+  turnBanner(extra=""){
+    const st=Game.state;
+    const reader = st.players[st.readerId];
+    const isReader = st.readerId===ME.id;
+    return `<div class="turn">
+      <div class="lbl">${extra||"Category caller"}</div>
+      <div class="who">${avatarFor(st.readerId)} ${esc(reader?reader.name:"…")}${isReader?'<span class="you-tag">YOU</span>':''}</div>
+    </div>`;
+  },
+
+  /* ---------- CATEGORY ---------- */
+  renderCategory(){
+    const st=Game.state;
+    const isReader = st.readerId===ME.id;
+    if(isReader){
+      const idea = CATEGORY_IDEAS[Math.floor(Math.random()*CATEGORY_IDEAS.length)];
+      view.innerHTML = `
+        <div class="card">
+          ${this.turnBanner("Your turn to call it")}
+          <label for="catIn">Name a category</label>
+          <input type="text" id="catIn" maxlength="120" placeholder="${esc(idea)}" autocomplete="off">
+          <div class="hint" style="margin:8px 0 0;text-align:left">Something everyone has an opinion on. Tap 🎲 for ideas.</div>
+          <div class="row mt">
+            <button class="btn alt sm" id="diceBtn" style="flex:.5">🎲</button>
+            <button class="btn" id="catGo" style="flex:2">Lock category →</button>
+          </div>
+        </div>
+        ${this.scorePeek()}`;
+      const inp=$("#catIn");
+      $("#diceBtn").onclick=()=>{ inp.value = CATEGORY_IDEAS[Math.floor(Math.random()*CATEGORY_IDEAS.length)]; inp.focus(); };
+      const go=()=>{ const v=inp.value.trim()||inp.placeholder; Game.send({t:"category",category:v}); };
+      $("#catGo").onclick=go;
+      inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+      setTimeout(()=>inp.focus(),100);
+    } else {
+      const reader=st.players[st.readerId];
+      view.innerHTML = `
+        <div class="card" style="text-align:center">
+          ${this.turnBanner()}
+          <div style="font-size:40px" class="spin">🌿</div>
+          <p class="sub" style="margin-top:10px"><b>${esc(reader?reader.name:"Someone")}</b> is choosing a category…</p>
+        </div>
+        ${this.scorePeek()}`;
+    }
+  },
+
+  /* ---------- ANSWER ---------- */
+  renderAnswer(){
+    const st=Game.state;
+    const mySubmitted = st_has(st.submitted,ME.id);
+    const isReader = st.readerId===ME.id;
+    const aliveIds = st.order.filter(id=>st.players[id]&&st.players[id].alive&&(now()-(st.players[id].seen||0)<STALE));
+    const ticks = aliveIds.map(id=>{
+      const done = st_has(st.submitted,id);
+      return `<div class="tick ${done?'done':''}"><span class="st">${done?'✅':'✍️'}</span>${esc(st.players[id].name)}</div>`;
+    }).join("");
+    const doneCount = aliveIds.filter(id=>st_has(st.submitted,id)).length;
+
+    view.innerHTML = `
+      <div class="card">
+        <div class="category-display"><small>The category is</small>${esc(st.category)}</div>
+        ${ mySubmitted ? `
+          <div style="text-align:center">
+            <div style="font-size:42px;animation:pop .45s cubic-bezier(.2,1.6,.4,1)">✅</div>
+            <h2 style="margin-top:6px">Locked in!</h2>
+            <p class="sub" style="margin-top:4px">Waiting for the others… (${doneCount}/${aliveIds.length})</p>
+          </div>` : `
+          <label for="ansIn">Say what the herd will say</label>
+          <input type="text" id="ansIn" maxlength="80" placeholder="Type your answer…" autocomplete="off">
+          <button class="btn mt" id="ansGo">🔒 Lock it in</button>
+          <div class="hint" style="text-align:left;margin-top:10px">Think majority, not clever. ${doneCount}/${aliveIds.length} locked in.</div>
+        `}
+        <div class="waitlist" style="margin-top:16px">${ticks}</div>
+        ${ isReader ? `<button class="btn ghost mt" id="revealBtn">Reveal now (skip stragglers)</button>` : "" }
+      </div>
+      ${this.scorePeek()}`;
+
+    if(!mySubmitted){
+      const inp=$("#ansIn");
+      const go=()=>{ const v=inp.value.trim(); if(!v){this.toast("Type something 🌿");return;} Game.send({t:"answer",text:v}); };
+      $("#ansGo").onclick=go;
+      inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+      setTimeout(()=>inp.focus(),100);
+    }
+    const rb=$("#revealBtn"); if(rb) rb.onclick=()=>Game.send({t:"reveal"});
+  },
+
+  /* ---------- COUNTDOWN ---------- */
+  renderCountdown(){
+    const st=Game.state;
+    if(this._cdRunning) return;          // a single mount + animation loop owns this phase
+    view.innerHTML = `<div class="card" style="text-align:center"><div class="category-display"><small>Get ready…</small>${esc(st.category)}</div></div>`;
+    this._cdRunning = true;
+    const startedAt = st.countdownAt;
+    const tick=()=>{
+      if(!Game.state || Game.state.phase!=="countdown" || Game.state.countdownAt!==startedAt){
+        overlay.innerHTML=""; this._cdRunning=false; return;
+      }
+      const e = now()-startedAt;
+      const cur = 3 - Math.floor(e/1000);
+      const inner = cur>0
+        ? `<div class="cd-num">${cur}</div><div class="cd-cap">Say what the herd says…</div>`
+        : `<div class="cd-go">REVEAL!</div>`;
+      overlay.innerHTML = `<div class="countdown">${inner}</div>`;
+      setTimeout(()=>requestAnimationFrame(tick),120);
+    };
+    tick();
+  },
+
+  /* ---------- REVEAL ---------- */
+  renderReveal(){
+    const st=Game.state;
+    const r=st.reveal||{groups:[]};
+    const isReader = st.readerId===ME.id;
+    // one-time personal payoff toast per reveal
+    const key = "r"+(st.countdownAt||0);
+    if(this._revealKey!==key){
+      this._revealKey = key;
+      const mine = r.groups.find(g=>g.ids.includes(ME.id));
+      if(mine && mine.win) setTimeout(()=>this.toast("You're with the herd! +1 🌿"),650);
+      else if(mine && mine.cow) setTimeout(()=>this.toast("Lone wolf this round 🐄"),650);
+    }
+    const groupsHtml = r.groups.map((g,i)=>{
+      const tag = g.win?`<span class="gtag herd">🌿 +1 each</span>` : (g.cow?`<span class="gtag cow">🐄 lone wolf</span>`:`<span class="gtag none">no points</span>`);
+      const people = g.ids.map(id=>{
+        const p=st.players[id]; const me=id===ME.id;
+        return `<div class="gp"><span class="av">${avatarFor(id)}</span>${esc(p?p.name:"?")}${me?'<span class="you-tag">YOU</span>':''}${g.win?'<span class="plus">+1</span>':''}</div>`;
+      }).join("");
+      return `<div class="group ${g.win?'win':''} ${(g.cow&&!g.win)?'solo':''}" style="animation-delay:${i*0.08}s">
+        <div class="ghead"><div class="gans">${esc(g.answer)}</div>${tag}</div>
+        <div class="gpeople">${people}</div>
+      </div>`;
+    }).join("");
+    const headline = r.herd ? "The herd has spoken 🌿" : (r.tie ? "Split herd — no points 🌗" : "No herd this time 🤷");
+    const subline = r.herd
+      ? `Biggest group: <b>${r.maxN}</b> match${r.maxN===1?"":"es"}. They each grab a point.`
+      : (r.tie ? `Two groups tied for the lead — you need a clear majority. Nobody scores.`
+               : `Everyone went their own way — nobody scores.`);
+    view.innerHTML = `
+      <div class="card">
+        <div class="eyebrow">${esc(st.category)}</div>
+        <h2>${headline}</h2>
+        <p class="sub" style="margin-bottom:14px">${subline}</p>
+        ${groupsHtml}
+        <button class="btn mt" id="nextBtn">${isReader?"Next round →":"Next round →"}</button>
+        <div class="hint">${isReader?"You called it — tap to pass the turn.":"Anyone can tap next."}</div>
+      </div>
+      ${this.scoreboard()}`;
+    $("#nextBtn").onclick=()=>Game.send({t:"next"});
+  },
+
+  /* ---------- GAME OVER ---------- */
+  renderGameover(){
+    const st=Game.state;
+    const winners = st.winners.map(id=>st.players[id]).filter(Boolean);
+    const wn = winners.map(p=>esc(p.name)).join(" & ");
+    view.innerHTML = `
+      <div class="card">
+        <div class="winner-hero">
+          <div class="trophy">🏆</div>
+          <div class="wname">${wn||"Winner"}</div>
+          <div class="wsub">reached ${st.winScore} points — total herd energy 🌿</div>
+        </div>
+      </div>
+      ${this.scoreboard(true)}
+      <div class="card">
+        <button class="btn gold" id="againBtn">🔁 Play again</button>
+        <div class="hint">Same crew, fresh scores.</div>
+      </div>`;
+    $("#againBtn").onclick=()=>Game.send({t:"again"});
+  },
+
+  /* ---------- shared score widgets ---------- */
+  scorePeek(){
+    const st=Game.state;
+    const sorted=[...st.order].filter(id=>st.players[id]).sort((a,b)=>st.players[b].score-st.players[a].score);
+    return `<div class="card" style="padding:14px 16px">
+      <div class="players">${sorted.map(id=>{const p=st.players[id];const me=id===ME.id;
+        return `<div class="pchip ${me?'me':''}"><span class="av">${avatarFor(id)}</span>${esc(p.name)}<span class="sc">${p.score}</span></div>`;}).join("")}</div>
+    </div>`;
+  },
+  scoreboard(final=false){
+    const st=Game.state;
+    const sorted=[...st.order].filter(id=>st.players[id]).sort((a,b)=>st.players[b].score-st.players[a].score);
+    const top=sorted.length?st.players[sorted[0]].score:0;
+    const rows=sorted.map((id,i)=>{
+      const p=st.players[id]; const lead=p.score===top&&top>0; const me=id===ME.id;
+      const pct=Math.min(100,(p.score/st.winScore)*100);
+      return `<div class="score-row ${lead?'lead':''}">
+        <span class="av">${avatarFor(id)}</span>
+        <div style="flex:1">
+          <div class="nm">${esc(p.name)}${me?'<span class="you-tag">YOU</span>':''} ${lead&&final?'<span class="crown">👑</span>':''}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <span class="pts">${p.score}</span>
+      </div>`;
+    }).join("");
+    return `<div class="card"><div class="eyebrow">Scoreboard · first to ${st.winScore}</div>${rows}</div>`;
+  }
+};
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(function boot(){
+  UI.setConn("connecting");
+  const hash = location.hash.replace(/^#/,"").trim().toUpperCase();
+  if(hash && /^[A-Z0-9]{4}$/.test(hash) && ME.name){
+    // returning / shared link with known name → auto-join
+    Game.start(hash, false);
+    UI.renderJoining();
+  } else if(hash && /^[A-Z0-9]{4}$/.test(hash)){
+    // shared link, no name yet — show home but prefill join code
+    UI.renderHome();
+    setTimeout(()=>{ const c=$("#codeIn"); if(c){c.value=hash;} const n=$("#nameIn"); if(n)n.focus(); },50);
+  } else {
+    UI.renderHome();
+  }
+  // re-render loop to keep presence/timers fresh
+  setInterval(()=>{ if(Game.room) UI.render(); }, 3000);
+  window.addEventListener("beforeunload",()=>{ try{Game.send({t:"leave"});}catch(e){} });
+})();
+</script>
+</body>
+</html>
