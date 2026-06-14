@@ -619,10 +619,33 @@ const UI = {
     clearTimeout(this.toastTimer); this.toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
   },
 
-  render(){
+  // a compact fingerprint of everything currently on screen — used to skip
+  // re-renders when nothing visible changed (prevents the periodic re-render
+  // from rewriting the DOM, replaying animations, and stealing input focus)
+  sig(){
+    const st = Game.state;
+    if(!Game.room) return "home";
+    if(!st || !st.players[ME.id]) return "joining:"+Game.room;
+    let s = st.phase+"|"+(Game.isHost?"H":"_")+"|"+st.readerId+"|"+st.category+"|"+st.countdownAt+"|"+(st.winners||[]).join(",");
+    s += "|"+st.order.map(id=>{
+      const p=st.players[id]; if(!p) return id+":x";
+      const alive = p.alive && (now()-(p.seen||0)<STALE);
+      const sub = (st.submitted&&st.submitted[id])?1:0;
+      return id+":"+p.name+":"+p.score+":"+(alive?1:0)+":"+sub;
+    }).join(",");
+    return s;
+  },
+
+  render(force){
     const st = Game.state;
     if(!Game.room){ this.renderHome(); return; }
-    if(!st || !st.players[ME.id]){ this.renderJoining(); return; }
+    if(!st || !st.players[ME.id]){
+      if(force || this._sig!=="joining:"+Game.room){ this._sig="joining:"+Game.room; this.renderJoining(); }
+      return;
+    }
+    const sig = this.sig();
+    if(!force && sig===this._sig) return;   // nothing visible changed → leave the DOM alone
+    this._sig = sig;
     overlay.innerHTML="";
     switch(st.phase){
       case "lobby": this.renderLobby(); break;
